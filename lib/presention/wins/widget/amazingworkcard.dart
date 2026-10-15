@@ -1,0 +1,153 @@
+import 'package:flutter/material.dart';
+import 'package:rosannalie/utils/appString.dart';
+import 'package:get/get.dart';
+import 'package:rosannalie/core/services/controller/wins_controller.dart';
+
+class Amazingworkcard extends StatelessWidget {
+  final int currentPoints;
+  final int totalPoints;
+  final int winsCount;
+
+  const Amazingworkcard({
+    super.key,
+    this.currentPoints = 120,
+    this.totalPoints = 200,
+    this.winsCount = 3,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final controller = Get.isRegistered<WinsController>() ? Get.find<WinsController>() : Get.put(WinsController());
+
+    return Obx(() {
+      final currentPointsVal = controller.progressPoints.value;
+      final totalPointsVal = controller.nextLevelTarget.value;
+      final double progress = totalPointsVal > 0 ? currentPointsVal / totalPointsVal : 0;
+
+      return Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [
+            Color(0xFFC5B8E8),
+            Color(0xFFF4C0C0),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(20),
+        border: const Border(
+          top: BorderSide(
+            color: Color(0x99FFFFFF),
+            width: 1,
+          ),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.06),
+            blurRadius: 10,
+            spreadRadius: 0,
+            offset: Offset.zero,
+          ),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.10),
+            blurRadius: 4,
+            spreadRadius: 0,
+            offset: Offset.zero,
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+
+          const Text(
+            '🎉',
+            style: TextStyle(fontSize: 28),
+          ),
+          const SizedBox(height: 10),
+
+          // Title
+          Text(
+            controller.bannerTitle.value.isNotEmpty ? controller.bannerTitle.value : 'Amazing work today, keep it up!',
+            textAlign: TextAlign.center,
+            style: AppTextStyles.plusJakartaSans(
+              fontSize: 17,
+              fontWeight: FontWeight.w800,
+              color: const Color(0xFF161022),
+            ).copyWith(
+              height: 24.0 / 16.0,
+              letterSpacing: 0.0,
+            ),
+          ),
+          const SizedBox(height: 8),
+
+          // Subtitle
+          Text(
+            controller.bannerSubtitle.value.isNotEmpty 
+                ? controller.bannerSubtitle.value 
+                : "You've earned $currentPointsVal points and completed $winsCount wins.\nThat's something to be proud of.",
+            textAlign: TextAlign.center,
+            style: AppTextStyles.inter(
+              fontSize: 13.5,
+              fontWeight: FontWeight.w400,
+              color: const Color(0xFF444054),
+            ).copyWith(height: 1.5),
+          ),
+          const SizedBox(height: 16),
+
+          // Progress bar
+          Stack(
+            children: [
+              Container(
+                width: double.infinity,
+                height: 8,
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.45),
+                  borderRadius: BorderRadius.circular(100),
+                ),
+              ),
+              FractionallySizedBox(
+                widthFactor: progress.clamp(0.0, 1.0),
+                child: Container(
+                  height: 9,
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [
+                        Color(0xFF896CCD),
+                        Color(0xFFE087A9),
+                      ],
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                    ),
+                    borderRadius: BorderRadius.circular(100),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+
+          // Progress label
+          Text(
+            controller.progressText.value.isNotEmpty 
+                ? controller.progressText.value 
+                : '$currentPointsVal/$totalPointsVal points to next level',
+            textAlign: TextAlign.center,
+            style: AppTextStyles.plusJakartaSans(
+              fontSize: 12.5,
+              fontWeight: FontWeight.w400,
+              color: const Color(0xFF7E8184),
+            ).copyWith(
+              height: 18.0 / 12.0,
+              letterSpacing: 0.0,
+            ),
+          ),
+        ],
+      ),
+    );
+    });
+  }
+}
